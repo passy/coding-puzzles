@@ -1,10 +1,7 @@
--- Achieves only 3/10. Uses way to much memory at this point.
-
 import Numeric
+import Data.Bits
 import Data.Char
 import Data.Int
-import Data.List
-import Data.Bits
 
 main :: IO ()
 
@@ -17,27 +14,32 @@ main = do
 runOnLine :: IO ()
 runOnLine = do
     line <- getLine
-    let range = makeRange line
-    putStrLn $ show $ sum $ calculateOnes range
+    putStrLn . show $ calculateRange $ getRange line
 
 
-makeRange :: String -> [Int32]
-makeRange x = [(w !! 0)..(w !! 1)]
+getRange :: Read t => String -> (t, t)
+getRange x = (w!!0, w!!1)
     where w = map read $ words x
 
 
-calculateOnes :: [Int32] -> [Int]
-calculateOnes = map calculateSingle
+calculateRange :: (Int64, Int64) -> Int64
+calculateRange (a, b)
+    | a == 0           = solve b
+    | a > 0            = solve b - solve (a - 1)
+    | a < 0 && b > 0   = solveNegative a + solve b
+    | a < 0 && b < -1  = solveNegative a - solveNegative (b + 1)
+    -- a < 0 && b in (-1, 0)
+    | otherwise        = solveNegative a
+        where solveNegative x = ((-32) * x) - (solve $ complement x)
 
 
-calculateSingle :: Int32 -> Int
-calculateSingle x = popCount x
+solve :: Int64 -> Int64
+solve x
+    | x == 0    = 0
+    | even x    = (solve $ x - 1) + (f x)
+    | otherwise = (x + 1) `div` 2 + 2 * solve (x `div` 2)
+    where f = fromIntegral . pop32Count
 
 
-countOnes :: String -> Int
-countOnes value =
-    length $ filter (== '1') value
-
-
-int32ToBin :: Int32 -> String
-int32ToBin n = showIntAtBase 2 intToDigit n ""
+pop32Count :: (Integral a) => a -> Int
+pop32Count x = popCount $ (fromIntegral x :: Int32)
