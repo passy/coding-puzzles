@@ -1,8 +1,10 @@
--- Achieves only 2/10. Uses way to much memory at this point.
+-- Achieves only 3/10. Uses way to much memory at this point.
 
 import Numeric
 import Data.Char
 import Data.Int
+import Data.List
+import Data.Bits
 
 main :: IO ()
 
@@ -29,9 +31,7 @@ calculateOnes = map calculateSingle
 
 
 calculateSingle :: Int32 -> Int
-calculateSingle x
-    | x >= 0    = countOnes $ int32ToBin x
-    | otherwise = 32 - (countOnes $ int32ToBin ((abs x) - 1))
+calculateSingle x = popCount x
 
 
 countOnes :: String -> Int
