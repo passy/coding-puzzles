@@ -9,9 +9,7 @@ nextcollatz n
 
 
 collatz :: (Integral a) => a -> [a]
--- There must be a prettier way than this. I'm actually using only half of the
--- functionality of scanl.
-collatz n = scanl (\x _ -> nextcollatz x) n [1..]
+collatz = iterate nextcollatz
 
 
 collatzlen :: (Integral a) => a -> Int
