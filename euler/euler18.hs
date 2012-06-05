@@ -2,16 +2,23 @@ readPyramid :: String -> [[Int]]
 readPyramid src = map (map read . words) $ lines src
 
 
--- Whoops, I should read the problem description more carefully. This just
--- calculates the maximum from top to bottom without respecting the property
--- that the numbers have to be adjacent to each other. So I think I will have to
--- come up with a backtracking algorithm, then.
+-- This is wrong. I skipped the part about *adjacent* numbers while reading.
+-- D'oh!
 getMaxPath :: [[Int]] -> [Int]
 getMaxPath [] = []
 getMaxPath (x:xs) =
     foldl1 max x : getMaxPath xs
 
 
+getMaxPath' :: [[Int]] -> [Int]
+getMaxPath' = foldr1 step
+
+
+step :: [Int] -> [Int] -> [Int]
+step [] [z] = [z]
+step (x:xs) (y:z:zs) = x + max y z : step xs (z:zs)
+
+
 main = do
     src <- readFile "euler18.txt"
-    putStrLn . show $ sum $ getMaxPath $ readPyramid src
+    putStrLn . show $ head $ getMaxPath' $ readPyramid src
