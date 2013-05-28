@@ -1,23 +1,12 @@
-// A functional singly-linked list
+#[warn(deprecated_mode)];
+#[warn(deprecated_pattern)];
+#[warn(vecs_implicitly_copyable)];
+#[deny(non_camel_case_types)];
 
-enum LList<T> {
-    Cons(T, @LList<T>),
-    Nil
-}
 
-fn head<T>(xs: LList<T>) -> T {
-    match xs {
-        Cons(x, _) => x,
-        Nil => fail!(~"empty list")
-    }
-}
+extern mod llist;
 
-fn tail<T>(xs: LList<T>) -> @LList<T> {
-    match xs {
-        Cons(_, xss) => xss,
-        Nil => fail!(~"empty list")
-    }
-}
+use llist::{LList, Cons, Nil, head, tail};
 
 fn main() {
     let xs : LList<int> = Cons(4, @Cons(8, @Cons(15, @Cons(16, @Nil))));
