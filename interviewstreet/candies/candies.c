@@ -73,18 +73,19 @@ error:
 
 
 int main(void) {
-    int *n, result,
+    int result,
+        n = 0,
         *kids = NULL;
 
-    scanf("%d", n);
-    kids = malloc(sizeof(int) * *n);
+    check(scanf("%d", &n), "scanf failed");
+    kids = malloc(sizeof(int) * n);
     check_mem(kids);
 
-    for (int i = 0; i < *n; i++) {
-        scanf("%d", (kids + i));
+    for (int i = 0; i < n; i++) {
+        check(scanf("%d", (kids + i)), "scanf failed");
     }
 
-    result = calc_min_candies(kids, *n);
+    result = calc_min_candies(kids, n);
     printf("%d", result);
 
     free(kids);
