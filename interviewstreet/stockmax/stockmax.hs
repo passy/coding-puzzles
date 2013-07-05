@@ -1,19 +1,18 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 import Control.Monad (forM_)
 
-readi :: String -> Int
+readi :: String -> Integer
 readi = read
 
 
 -- WTH? This can't be equivalent to the monstrum I wrote in Python.
-calcMaxList :: [Int] -> [Int]
+calcMaxList :: [Integer] -> [Integer]
 calcMaxList = scanr1 max
 
 
-maxProfit :: [Int] -> Int
+maxProfit :: [Integer] -> Integer
 maxProfit prices =
-    loop pmax 0 0
-    where
+    let
         maxl = calcMaxList prices
         pmax = zip prices maxl
         loop [] p _ = p
@@ -23,6 +22,9 @@ maxProfit prices =
             | otherwise  = loop xs p s
             where
                 (lp, lm) = x
+    in
+        loop pmax 0 0
+
 
 run :: IO ()
 run = do
