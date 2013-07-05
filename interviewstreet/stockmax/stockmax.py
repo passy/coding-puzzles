@@ -1,60 +1,38 @@
 #!/usr/bin/env python3
 
+"""
+Your algorithms have become so good at predicting the market that you now know
+what the share price of Wooden Orange Toothpicks Inc. (WOT) will be for the
+next N days.
 
-import heapq
+Each day, you can either buy one share of WOT, sell any number of shares of
+WOT that you ow or not make any transaction at all. What is the maximum profit
+you can obtain with an optimum trading strategy?
+"""
 
 
-class PriorityQueue:
-    def __init__(self, data=None):
-        self.counter = 0
+def calc_max_list(prices):
+    n = len(prices)
+    maxl = [prices[n - 1]] * n
 
-        self.heap = []
-        if data is not None:
-            self._heapify(data)
+    for i in range(n - 2, 0, -1):
+        maxl[i] = max(prices[i], maxl[i + 1])
 
-    def _heapify(self, data):
-        for value in data:
-            self.heap.append((-1 * value[1], self.counter, value))
-            self.counter += 1
-
-        heapq.heapify(self.heap)
-
-    def push(self, priority, value):
-        heapq.heappush(self.heap, (priority, self.counter, value))
-        self.counter += 1
-
-    def peek(self):
-        try:
-            return self.heap[0][2]
-        except IndexError:
-            return float('inf'), 0
-
-    def pop(self):
-        return heapq.heappop(self.heap)[2]
-
-    def __repr__(self):
-        return '<PriorityQueue heap={!r}>'.format(self.heap)
+    return maxl
 
 
 def max_profit(prices):
-    pq = PriorityQueue(enumerate(prices))
+    maxl = calc_max_list(prices)
+
     profit = 0
     stocks = 0
 
     for i, price in enumerate(prices):
-        while True:
-            li, lmax = pq.peek()
 
-            if i > li:
-                pq.pop()
-            else:
-                break
-
-        if i < li and price < lmax:
+        if maxl[i] > price:
             profit -= price
             stocks += 1
-
-        if i == li:
+        elif maxl[i] == price:
             profit += price * stocks
             stocks = 0
 
