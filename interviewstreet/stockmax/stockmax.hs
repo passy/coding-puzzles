@@ -29,8 +29,7 @@ maxProfit prices =
 run :: IO ()
 run = do
     getLine
-    let parseLine = map readi . words
-    prices <- fmap parseLine getLine
+    prices <- fmap (map readi . words) getLine
     print $ maxProfit prices
 
 

@@ -1,6 +1,6 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 import Control.Monad (forM_)
-import Data.List (nub, elemIndex)
+import Data.List (elemIndex)
 
 
 calcAnagram :: String -> Int
@@ -8,9 +8,9 @@ calcAnagram str =
     let
         l = length str
         a = take (l `div` 2) str
-        b = nub $ drop (l `div` 2) str
+        b = drop (l `div` 2) str
         loop (x:xs) bl c =
-            case elemIndex x b of
+            case elemIndex x bl of
                 Just i -> loop xs (take i bl ++ drop (i + 1) bl) c
                 Nothing -> loop xs bl (c + 1)
         loop [] _ c = c
