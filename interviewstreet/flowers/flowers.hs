@@ -13,8 +13,9 @@ minimumPrice n k flowers =
     let
         sorted = sort flowers
         m = reverse $ calcM n k
+        productSum = sum . map (uncurry (*))
     in
-        sum [x * y | (x, y) <- zip sorted m]
+        productSum $ zip sorted m
 
 run :: Int -> Int -> [Integer] -> IO ()
 run n k flowers = print $ minimumPrice n k flowers
