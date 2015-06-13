@@ -20,6 +20,8 @@ run = do
     f :: Int -> V.Vector (Int, Int) -> Int -> (Int, Int) -> (Int, Int)
     f m xs i x =
         let a = (m - snd x)
+            -- Unsafe, ugly arithmetic. There certainly is a nicer way,
+            -- like recursing over the tail of it instead.
             rest = V.slice (i + 1) (length xs - i - 1) xs
             maybeMatch = fmap fst $ V.find ((== a) . snd) rest
         in (fst x, fromMaybe 0 maybeMatch)
