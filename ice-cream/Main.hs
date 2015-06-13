@@ -18,8 +18,8 @@ run = do
  where
     f :: Int -> [(Int, Int)] -> [(Int, Int)] -> [(Int, Int)]
     f m acc (x:xs) =
-        let a = (m - snd x)
-            maybeMatch = fmap fst $ find ((== a) . snd) xs
+        let a = m - snd x
+            maybeMatch = fst <$> find ((== a) . snd) xs
         in f m ((fst x, fromMaybe 0 maybeMatch) : acc) xs
     f m acc _ = acc
 
