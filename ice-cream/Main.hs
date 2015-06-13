@@ -2,29 +2,26 @@
 
 import Data.Traversable (forM)
 import Data.Foldable (forM_)
-import Data.List (sortOn)
+import Data.List (sortOn, find)
 import Data.Maybe (fromMaybe)
-import qualified Data.Vector as V
 
 run :: IO (Int, Int)
 run = do
     (m :: Int)           <- read <$> getLine
     (n :: Int)           <- read <$> getLine
-    (xs :: V.Vector (Int, Int)) <- V.fromList <$> reverse <$> sortOn snd <$> zip [1..] <$> (fmap read . words) <$> getLine
+    (xs :: [(Int, Int)]) <- reverse <$> sortOn snd <$> zip [1..] <$> (fmap read . words) <$> getLine
 
-    let r = V.imap (f m xs) xs
+    let r = f m [] xs
 
-    return . sortTuple . V.head . V.filter ((/= 0) . snd) $ r
+    return . sortTuple . head . filter ((/= 0) . snd) $ r
 
  where
-    f :: Int -> V.Vector (Int, Int) -> Int -> (Int, Int) -> (Int, Int)
-    f m xs i x =
+    f :: Int -> [(Int, Int)] -> [(Int, Int)] -> [(Int, Int)]
+    f m acc (x:xs) =
         let a = (m - snd x)
-            -- Unsafe, ugly arithmetic. There certainly is a nicer way,
-            -- like recursing over the tail of it instead.
-            rest = V.slice (i + 1) (length xs - i - 1) xs
-            maybeMatch = fmap fst $ V.find ((== a) . snd) rest
-        in (fst x, fromMaybe 0 maybeMatch)
+            maybeMatch = fmap fst $ find ((== a) . snd) xs
+        in f m ((fst x, fromMaybe 0 maybeMatch) : acc) xs
+    f m acc _ = acc
 
     sortTuple :: (Int, Int) -> (Int, Int)
     sortTuple (a, b)
