@@ -1,9 +1,16 @@
 {-# LANGUAGE OverloadedStrings, ScopedTypeVariables #-}
 
-import Data.Traversable (forM)
+import Control.Applicative ((<$>))
 import Data.Foldable (forM_)
-import Data.List (sortOn, find)
+import Data.List (sortBy, find)
 import Data.Maybe (fromMaybe)
+import Data.Ord (comparing)
+import Data.Traversable (forM)
+
+-- Polyfill for base < 4.8
+sortOn :: Ord b => (a -> b) -> [a] -> [a]
+sortOn f =
+  map snd . sortBy (comparing fst) . map (\x -> let y = f x in y `seq` (y, x))
 
 run :: IO (Int, Int)
 run = do
