@@ -13,7 +13,7 @@ main = do
     let lrindices = [ (m, m) | m <- [0..(n - 1)] ]
     let rlindices = [ (m, n - 1 - m) | m <- [0..(n - 1)] ]
 
-    print $ abs $ (isum lrindices res) - (isum rlindices res)
+    print . abs $ isum lrindices res - isum rlindices res
 
   where
     isum indices lines =
