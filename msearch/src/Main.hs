@@ -19,6 +19,9 @@ findEntryIndices matrix (firstChar:_) =
   foldl (\acc (i, cols) ->
     ((\(j, _) -> (i, j)) <$> filter ((firstChar ==) . snd) cols) <> acc) [] matrix
 
+findWord :: CMatrix -> String -> (Int, Int) -> [(Int, Int)]
+findWord = undefined
+
 indexMatrix :: String -> CMatrix
 indexMatrix s =
     let ls = lines s
