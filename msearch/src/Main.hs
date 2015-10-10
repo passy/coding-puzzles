@@ -14,10 +14,10 @@ main = do
 
 
 findEntryIndices :: CMatrix -> String -> [(Int, Int)]
-findEntryIndices matrix word = do
-  let (firstChar:_) = word
+findEntryIndices _       []           = []
+findEntryIndices matrix (firstChar:_) =
   foldl (\acc (i, cols) ->
-    ((\(j, _) -> (i, j)) <$> filter (\(j, c) -> c == firstChar) cols) <> acc) [] matrix
+    ((\(j, _) -> (i, j)) <$> filter ((firstChar ==) . snd) cols) <> acc) [] matrix
 
 indexMatrix :: String -> CMatrix
 indexMatrix s =
