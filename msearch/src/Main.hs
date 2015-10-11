@@ -15,7 +15,6 @@ main = do
   let starts = findEntryIndices mat "LONDON"
   print starts
 
-
 findEntryIndices :: CMatrix -> String -> [(Int, Int)]
 findEntryIndices _       []           = []
 findEntryIndices matrix (firstChar:_) =
@@ -23,18 +22,22 @@ findEntryIndices matrix (firstChar:_) =
     ((\(j, _) -> (i, j)) <$> filter ((firstChar ==) . snd) cols) <> acc) [] matrix
 
 findWord :: CMatrix -> String -> Path -> (Int, Int) -> Path
-findWord matrix _    _    _     = []
+findWord []     _    _    _     = []
 findWord matrix word path start =
   if (third <$> path) == word then path
-  else go word path start
+  else go word start
   where
-    go (w:ws) path (x, y) =
+    go (w:ws) (x, y) =
+      let entry = lookup x matrix >>= lookup y
+          path' = (x, y, w) : path
+      in
       if | not . null $ filter (\(x', y', _) -> (x', y') == (x, y)) path -> path
-         | (matrix !! x !! y) == w -> findWord matrix ws ((x, y, w) : path) (x + 1, y)
-                                   <> findWord matrix ws ((x, y, w) : path) (x, y + 1)
-                                   <> findWord matrix ws ((x, y, w) : path) (x - 1, y)
-                                   <> findWord matrix ws ((x, y, w) : path) (x, y - 1)
+         | entry == pure w -> findWord matrix ws path' (x + 1, y)
+                           <> findWord matrix ws path' (x, y + 1)
+                           <> findWord matrix ws path' (x - 1, y)
+                           <> findWord matrix ws path' (x, y - 1)
          | otherwise -> path
+    go _ _ = path
 
 third :: (a, b, c) -> c
 third (_, _, c) = c
