@@ -43,11 +43,19 @@ findWord matrix (w:w':ws) visited (x, y) =
                    , (x - 1, y)
                    , (x, y - 1)
                    ]
+      -- The "Set" (TODO: Make this an actual set) of coordinates we've looked
+      -- at before plus the one we're looking at right now.
       visited' = (x, y) : visited
+      -- Coordinates plus value of all neighbors
       neighbors = (\(x', y') -> (x', y', lookup x' matrix >>= lookup y')) <$> directions
+      -- Only neighbors the contain the value we look at AND are within
+      -- out matrix.
       validNeighbors = filter (\(_, _, c) -> c == pure w') neighbors
+      -- The coordinates of all valid neighbors
       coords = (\(x', y', _) -> (x', y')) <$> validNeighbors
+      -- The coordinates of all valid neighbors that we haven't visited yet.
       nonVisitedCoords = filter (`notElem` visited) coords
+      -- Careful: Not tail-recursive!
       children = findWord matrix (w':ws) visited' <$> nonVisitedCoords
   in
       Node (x, y, w) children
@@ -57,6 +65,7 @@ findWord _ []    _ _      = error "empty word"
 third :: (a, b, c) -> c
 third (_, _, c) = c
 
+-- | Turn a newline separated string into an index character matrix.
 indexMatrix :: String -> CMatrix
 indexMatrix s =
     let ls = lines s
