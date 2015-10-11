@@ -6,17 +6,29 @@ import System.Environment (getArgs)
 
 type CMatrix = [(Int, [(Int, Char)])]
 type Step = (Int, Int, Char)
-type Path = [Step]
 
+-- A trie of all prefixes found in the matrix.
 data Node a = Node a [Node a] deriving (Eq, Show)
 
 main :: IO ()
 main = do
   (fname:word:_) <- getArgs
   mat <- indexMatrix <$> readFile fname
+
+  -- ALl entry points, i.e. coordinates for the first letter of the word we're
+  -- looking for.
   let starts = findEntryIndices mat word
+  -- All possibly partial paths from the given start points to the word.
   let paths = findWord mat word [] <$> starts
-  print paths
+  -- Only paths that contain the entire word.
+  let fullPaths = filter (isFullPath word) paths
+  print fullPaths
+
+-- | Verify that the entire word is present in the given trie.
+isFullPath :: String -> Node Step -> Bool
+isFullPath []     _                         = True
+isFullPath [w] (Node (_, _, c) _)           = w == c
+isFullPath (w:ws) (Node (_, _, c) children) = (w == c) && any (isFullPath ws) children
 
 findEntryIndices :: CMatrix -> String -> [(Int, Int)]
 findEntryIndices _       []           = []
