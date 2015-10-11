@@ -26,6 +26,20 @@ findEntryIndices matrix (firstChar:_) =
   foldl (\acc (i, cols) ->
     ((\(j, _) -> (i, j)) <$> filter ((firstChar ==) . snd) cols) <> acc) [] matrix
 
+findWord2 :: CMatrix -> String -> Path -> (Int, Int) -> [Path]
+findWord2 matrix (w:w':ws) path (x, y) =
+  let directions = [ (x + 1, y)
+                   , (x, y + 1)
+                   , (x - 1, y)
+                   , (x, y - 1)
+                   ]
+      path' = (x, y, w) : path
+      neighbors = (\(x, y) -> (x, y, lookup x matrix >>= lookup y)) <$> directions
+      validNeighbors = filter (\(x, y, c) -> c == pure w') neighbors
+      coords = (\(x, y, _) -> (x, y)) <$> validNeighbors
+  in findWord2 matrix (w':ws) path' =<< coords
+findWord2 _      (w:_) path (x, y) = (x, y, w) : path
+
 findWord :: CMatrix -> String -> String -> Path -> (Int, Int) -> Path
 findWord []     _    _     _    _       = []
 findWord matrix word word' path start =
