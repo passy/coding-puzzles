@@ -40,11 +40,16 @@ def run():
                 queue.append(_n)
         cur_cost += COST
 
-    for i in range(2, n + 1):
-        if i not in cost:
-            print(-1, end=' ')
+    for i in range(1, n + 1):
+        if i == start:
+            continue
+        elif i not in cost:
+            print(-1, end='')
         else:
-            print(cost[i], end=' ')
+            print(cost[i], end='')
+
+        if i != n:
+            print(' ', end='')
 
     print()
 
