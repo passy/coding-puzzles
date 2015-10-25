@@ -4,6 +4,7 @@ import Control.Applicative ((<$>))
 import Control.Monad (replicateM_)
 import Data.Char (ord)
 import Control.Arrow ((***))
+import Data.Foldable (foldMap)
 
 data IsFunny = Funny | NotFunny
 
@@ -20,7 +21,7 @@ funnyDiffs :: String -> [Int]
 funnyDiffs a =
   let pairs = zip a (tail a)
       nums = (ord *** ord) <$> pairs
-  in foldMap (return . uncurry (flip (-))) nums
+  in foldMap (return . abs . uncurry (flip (-))) nums
 
 main :: IO ()
 main = do
