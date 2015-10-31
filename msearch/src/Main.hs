@@ -1,3 +1,4 @@
+#!/usr/bin/env runhaskell
 {-# LANGUAGE MultiWayIf #-}
 module Main where
 
@@ -16,7 +17,7 @@ main = do
   (fname:word:_) <- getArgs
   mat <- indexMatrix <$> readFile fname
 
-  -- ALl entry points, i.e. coordinates for the first letter of the word we're
+  -- All entry points, i.e. coordinates for the first letter of the word we're
   -- looking for.
   let starts = findEntryIndices mat word
   -- All possibly partial paths from the given start points to the word.
@@ -28,7 +29,7 @@ main = do
 -- | Verify that the entire word is present in the given trie.
 isFullPath :: String -> Node Step -> Bool
 isFullPath []     _                         = True
-isFullPath [w] (Node (_, _, c) _)           = w == c
+isFullPath [w]    (Node (_, _, c) _)        = w == c
 isFullPath (w:ws) (Node (_, _, c) children) = (w == c) && any (isFullPath ws) children
 
 findEntryIndices :: CMatrix -> String -> [(Int, Int)]
