@@ -14,6 +14,8 @@ main = do
 
 tawla :: Int -> Int -> String
 tawla a b | a == b = special a b
+          | a == 6 && b == 5 = special a b
+          | b == 6 && a == 5 = special a b
           | otherwise = unwords $ normal <$> sortBy (flip compare) [a, b]
 
     where
