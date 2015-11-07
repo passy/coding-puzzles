@@ -1,7 +1,9 @@
-import Control.Arrow
-import Control.Monad
-import Control.Applicative ((<$>))
-import Data.Char (digitToInt)
+import           Control.Applicative ((<$>))
+import           Control.Arrow
+import           Control.Monad
+import           Data.Char           (digitToInt)
+import           Debug.Trace
+import qualified Data.Map.Strict     as Map
 
 wschars :: String
 wschars = " \t\r\n"
@@ -31,17 +33,22 @@ runTest :: Int -> IO ()
 runTest i = do
   t <- readLn :: IO Int
   ls <- fmap strip <$> replicateM t getLine
-  let res = length $ go ls []
+  -- let m = foldl' (\b a -> Map.insertWith (++) (length a) a b) Map.empty ls
+  let res = go Map.empty ls 0
   putStrLn $ "Case " ++ show i ++ ": " ++ show res
 
-go :: [String] -> [String] -> [String]
-go [] acc = acc
-go (x:xs) [] = go xs [x]
--- Jeez, that's so ineffecient and stupid it hurts. Why am I so stupid right now again?
-go (x:xs) acc = if any (equivalent x) acc then go xs acc else go xs (x : acc)
+go :: Map.Map Int [String] -> [String] -> Int -> Int
+go _ []     acc = acc
+go m (x:xs) acc =
+  let m' = Map.insertWith (++) (length x) [x] m
+      res = maybe False (any (equivalent x)) (Map.lookup (length x) m)
+  in if res then go m xs acc else go m' xs (acc + 1)
 
+-- Careful, I dropped the length check here since that invariant is controlled
+-- higher up.
 equivalent :: String -> String -> Bool
-equivalent a b = (length a == length b) && same (abs <$> uncurry (-) <$> (digitToInt *** digitToInt) <$> zip a b)
+equivalent a b =
+  same (abs <$> uncurry (-) <$> (digitToInt *** digitToInt) <$> zip a b)
 
 same :: (Eq a) => [a] -> Bool
 same [] = True
