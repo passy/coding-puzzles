@@ -1,18 +1,25 @@
 import Control.Arrow
 import Control.Monad
 import Data.Char (digitToInt)
+import Data.List
 
 main :: IO ()
 main = do
   n <- readLn :: IO Int
-  replicateM_ n runTest
+  forM_ [1..n] runTest
 
-runTest :: IO ()
-runTest = do
+runTest :: Int -> IO ()
+runTest i = do
   t <- readLn :: IO Int
   ls <- replicateM t getLine
+  let res = length $ go ls []
+  putStrLn $ "Case " ++ show i ++ ": " ++ show res
 
-  print ls
+go :: [String] -> [String] -> [String]
+go [] acc = acc
+go (x:xs) [] = go xs [x]
+-- Jeez, that's so ineffecient and stupid it hurts. Why am I so stupid right now again?
+go (x:xs) acc = if any (equivalent x) acc then go xs acc else go xs (x : acc)
 
 equivalent :: String -> String -> Bool
 equivalent a b = (length a == length b) && same (abs <$> uncurry (-) <$> (digitToInt *** digitToInt) <$> zip a b)
