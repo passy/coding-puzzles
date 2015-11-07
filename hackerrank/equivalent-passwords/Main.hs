@@ -1,7 +1,26 @@
 import Control.Arrow
 import Control.Monad
+import Control.Applicative ((<$>))
 import Data.Char (digitToInt)
-import Data.List
+
+wschars :: String
+wschars = " \t\r\n"
+
+strip :: String -> String
+strip = lstrip . rstrip
+
+-- | Same as 'strip', but applies only to the left side of the string.
+lstrip :: String -> String
+lstrip s = case s of
+                  [] -> []
+                  (x:xs) -> if x `elem` wschars
+                            then lstrip xs
+                            else s
+
+-- | Same as 'strip', but applies only to the right side of the string.
+rstrip :: String -> String
+rstrip = reverse . lstrip . reverse
+
 
 main :: IO ()
 main = do
@@ -11,7 +30,7 @@ main = do
 runTest :: Int -> IO ()
 runTest i = do
   t <- readLn :: IO Int
-  ls <- replicateM t getLine
+  ls <- fmap strip <$> replicateM t getLine
   let res = length $ go ls []
   putStrLn $ "Case " ++ show i ++ ": " ++ show res
 
