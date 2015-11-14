@@ -1,22 +1,19 @@
 import Control.Applicative ((<$>))
 import Data.List
 import Control.Monad
+import Debug.Trace
 import qualified Data.Set as Set
 import qualified Data.Map.Strict as M
 
 readListOfInts :: IO [Int]
-readListOfInts = (fmap read) <$> words <$> getLine
+readListOfInts = fmap read <$> words <$> getLine
 
-mkFreqTable :: [Int] -> M.Map Int Int
-mkFreqTable = foldl' (\m k -> M.insertWith (const (+ 1)) k 1 m) M.empty
-
-findMissing :: [Int] -> [Int] -> Set.Set Int
+findMissing :: [Int] -> [Int] -> [Int]
 findMissing lm ln =
-  let lmm = mkFreqTable lm
-      lnm = mkFreqTable ln
-      foldF s k b = maybe (Set.insert b s) (\a -> if a < b then Set.insert k s else s) (M.lookup k lmm)
-      diff = M.foldlWithKey' foldF Set.empty lnm
-  in diff
+  let indexed = zip lm (repeat 1) ++ zip ln (repeat (-1))
+      lmn = M.fromListWith (+) indexed
+      missing = M.filter (< 0) lmn
+  in M.keys missing
 
 main :: IO ()
 main = do
@@ -25,4 +22,4 @@ main = do
   m <- readLn :: IO Int
   lm <- take m <$> readListOfInts
 
-  putStrLn $ unwords $ fmap show <$> Set.toList $ findMissing ln lm
+  putStrLn $ unwords $ show <$> findMissing ln lm
