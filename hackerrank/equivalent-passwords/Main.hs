@@ -35,12 +35,12 @@ main = do
 -- | Reduce all given numbers to an equivalence class where
 -- | all digits are reduced by the same number such that
 -- | at least one of them reaches 0.
--- | E.g. normalize 1234 = "0123"
--- |      normalize 3456 = "0123"
-normalize :: Int -> String
+-- | E.g. normalize "1234" = "0123"
+-- |      normalize "3456" = "0123"
+normalize :: String -> String
 normalize a =
-  let digits = digitToInt <$> show a :: [Int]
-      minDigit = minimum digits :: Int
+  let digits = digitToInt <$> a
+      minDigit = minimum digits
   in join $ show <$> subtract minDigit <$> digits
 
 runTest :: Int -> IO ()
@@ -48,14 +48,11 @@ runTest i = do
   t <- readLn :: IO Int
   ls <- fmap strip <$> replicateM t getLine
   -- let m = foldl' (\b a -> Map.insertWith (++) (length a) a b) Map.empty ls
-  let res = go ls
+  let res = length $ go ls
   putStrLn $ "Case " ++ show i ++ ": " ++ show res
 
-go :: [String] -> Int
-go is =
-  let iis = read <$> is
-      s' = Set.fromList $ normalize <$> iis
-  in Set.size s'
+go :: [String] -> [String]
+go is = nub $ normalize <$> is
 
 -- Careful, I dropped the length check here since that invariant is controlled
 -- higher up.
