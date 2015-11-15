@@ -34,12 +34,13 @@ main = do
 -- | Reduce all given numbers to an equivalence class where
 -- | all digits are reduced by the same number such that
 -- | at least one of them reaches 0.
-normalize :: Int -> Int
+-- | E.g. normalize 1234 = "0123"
+-- |      normalize 3456 = "0123"
+normalize :: Int -> String
 normalize a =
-  let strA = show a
-      minDigit = minimumBy (compare `on` digitToInt) strA
-      subtractor = read $ replicate (length strA) minDigit
-  in a - subtractor
+  let digits = digitToInt <$> show a :: [Int]
+      minDigit = minimum digits :: Int
+  in join $ show <$> subtract minDigit <$> digits
 
 runTest :: Int -> IO ()
 runTest i = do
