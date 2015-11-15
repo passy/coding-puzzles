@@ -48,16 +48,14 @@ runTest i = do
   t <- readLn :: IO Int
   ls <- fmap strip <$> replicateM t getLine
   -- let m = foldl' (\b a -> Map.insertWith (++) (length a) a b) Map.empty ls
-  let res = length $ go ls
+  let res = go ls
   putStrLn $ "Case " ++ show i ++ ": " ++ show res
 
 go :: [String] -> [String]
 go is = nub $ normalize <$> is
 
--- Careful, I dropped the length check here since that invariant is controlled
--- higher up.
 equivalent :: String -> String -> Bool
-equivalent a b =
+equivalent a b = length a == length b &&
   same (abs <$> uncurry (-) <$> (digitToInt *** digitToInt) <$> zip a b)
 
 same :: (Eq a) => [a] -> Bool
