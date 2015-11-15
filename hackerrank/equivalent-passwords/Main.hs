@@ -2,6 +2,8 @@ import           Control.Applicative ((<$>))
 import           Control.Arrow
 import           Control.Monad
 import           Data.Char           (digitToInt)
+import           Data.List
+import           Data.Function (on)
 import           Debug.Trace
 import qualified Data.Map.Strict     as Map
 
@@ -28,6 +30,16 @@ main :: IO ()
 main = do
   n <- readLn :: IO Int
   forM_ [1..n] runTest
+
+-- | Reduce all given numbers to an equivalence class where
+-- | all digits are reduced by the same number such that
+-- | at least one of them reaches 0.
+normalize :: Int -> Int
+normalize a =
+  let strA = show a
+      minDigit = minimumBy (compare `on` digitToInt) strA
+      subtractor = read $ replicate (length strA) minDigit
+  in a - subtractor
 
 runTest :: Int -> IO ()
 runTest i = do
