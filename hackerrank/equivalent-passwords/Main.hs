@@ -5,6 +5,7 @@ import           Data.Char           (digitToInt)
 import           Data.List
 import           Data.Function       (on)
 import           Debug.Trace
+import Data.Monoid ((<>))
 import qualified Data.Map.Strict     as Map
 import qualified Data.Set            as Set
 
@@ -48,14 +49,19 @@ runTest i = do
   t <- readLn :: IO Int
   ls <- fmap strip <$> replicateM t getLine
   -- let m = foldl' (\b a -> Map.insertWith (++) (length a) a b) Map.empty ls
-  let res = go ls
+  let res = go Map.empty (normalize <$> ls) 0
   putStrLn $ "Case " ++ show i ++ ": " ++ show res
 
-go :: [String] -> [String]
-go is = nub $ normalize <$> is
+go :: Map.Map Int (Set.Set String) -> [String] -> Int -> Int
+go _ [] acc = acc
+go m (x:xs) acc =
+  let m' = Map.insertWith (<>) (length x) (Set.singleton x) m
+      res = maybe False (any (equivalent x)) (Map.lookup (length x) m)
+  in if res then go m xs acc else go m' xs (acc + 1)
 
+-- Careful, this doesn't include the length check which is required.
 equivalent :: String -> String -> Bool
-equivalent a b = length a == length b &&
+equivalent a b =
   same (abs <$> uncurry (-) <$> (digitToInt *** digitToInt) <$> zip a b)
 
 same :: (Eq a) => [a] -> Bool
