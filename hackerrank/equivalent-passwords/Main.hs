@@ -1,3 +1,4 @@
+import           Data.Foldable (any)
 import           Control.Applicative ((<$>))
 import           Control.Arrow
 import           Control.Monad
