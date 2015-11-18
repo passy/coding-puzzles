@@ -12,7 +12,7 @@ type Matrix = [[Int]]
 main :: IO ()
 main = do
   ls <- replicateM 6 (take 6 <$> fmap read <$> words <$> getLine) :: IO [[Int]]
-  let sums = catMaybes [coordSum (hourglass (x, y)) ls | x <- [0..4], y <- [0..4]]
+  let sums = catMaybes [coordSum (hourglass (x, y)) ls | x <- [0..3], y <- [0..3]]
   print $ maximum sums
 
 hourglass :: (Int, Int) -> [(Int, Int)]
