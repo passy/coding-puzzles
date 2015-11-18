@@ -2,6 +2,7 @@ module Main where
 
 import Prelude hiding (sum, maximum, (<$>), traverse)
 import Control.Monad
+import Data.Maybe (catMaybes)
 import Control.Applicative ((<$>))
 import Data.Foldable (maximum, sum)
 import Data.Traversable (traverse)
@@ -11,7 +12,7 @@ type Matrix = [[Int]]
 main :: IO ()
 main = do
   ls <- replicateM 6 (take 6 <$> fmap read <$> words <$> getLine) :: IO [[Int]]
-  let sums = sum <$> [coordSum (hourglass (x, y)) ls | x <- [0..4], y <- [0..4]]
+  let sums = catMaybes [coordSum (hourglass (x, y)) ls | x <- [0..4], y <- [0..4]]
   print $ maximum sums
 
 hourglass :: (Int, Int) -> [(Int, Int)]
