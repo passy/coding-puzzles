@@ -1,5 +1,3 @@
-#!/usr/bin/env runhaskell
-
 -- | This is the stupid, O(3^n) impl.
 steps :: Integer -> Integer
 steps n
