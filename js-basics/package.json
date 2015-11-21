@@ -1,0 +1,9 @@
+{
+  "scripts": {
+    "test": "xo"
+  },
+  "xo": {
+    "esnext": true,
+    "space": 2
+  }
+}
