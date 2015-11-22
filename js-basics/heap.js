@@ -1,5 +1,7 @@
 'use strict';
 
+const jsc = require('jsverify');
+
 function BinaryHeap(cmp) {
   this.content = [];
   this.cmp = cmp;
@@ -11,64 +13,54 @@ BinaryHeap.prototype = {
     this.bubbleUp(this.content.length - 1);
   },
 
+  swap(i, j) {
+    const tmp = this.content[i];
+    this.content[i] = this.content[j];
+    this.content[j] = tmp;
+  },
+
   peek() {
     return this.content[0];
   },
 
   bubbleUp(i) {
-    const el = this.content[i], score = this.cmp(el);
-    let j = i;
+    if (i <= 0) return;
 
-    while (j > 0) {
-      const parentI = Math.floor((i - 1) / 2);
-      const parent = this.content[parentI];
-      const parentScore = this.cmp(parent);
-
-      if (parentScore < score) break;
-
-      this.content[j] = parent;
-      this.content[parentI] = el;
-      j = parentI;
+    const parent = Math.floor((i - 1) / 2);
+    if (this.cmp(this.content[i]) > this.cmp(this.content[parent])) {
+      this.swap(i, parent);
+      this.bubbleUp(parent);
     }
   },
 
   siftDown(i) {
-    const el = this.content[i], score = this.cmp(el);
-    let j = i;
+    const l = 2 * i + 1;
+    const r = l + 1;
+    let largest = i;
 
-    const swap = (i, j) => {
-      const tmp = this.content[i];
-      this.content[i] = this.content[j];
-      this.content[j] = tmp;
+    const cmp = idx => this.cmp(this.content[idx]);
+
+    if (l < this.content.length && this.cmp(this.content[l]) > this.cmp(this.content[largest])) {
+      largest = l;
     }
-
-    while (true) {
-      console.log('content: ', this.content);
-      const childi = j * 2;
-      const a = this.content[childi + 1];
-      const b = this.content[childi + 2];
-      const scoreA = this.cmp(a);
-      const scoreB = this.cmp(b);
-
-      if (a !== undefined && score > scoreA && scoreA < scoreB) {
-        console.log('swap(', j, childi + 1, ')');
-        swap(j, childi + 1);
-        j = a;
-      } else if (b !== undefined && score > scoreB && scoreB < scoreA) {
-        console.log('swap(', j, childi + 2, ')');
-        swap(j, childi + 2);
-        j = b;
-      } else {
-        break;
-      }
+    if (r < this.content.length && this.cmp(this.content[r]) > this.cmp(this.content[largest])) {
+      largest = r;
+    }
+    if (largest !== i) {
+      this.swap(largest, i);
+      this.siftDown(largest);
     }
   },
 
   pop() {
-    const e = this.content[0];
-    this.content[0] = this.content.pop();
-    this.siftDown(0);
-    return e;
+    const fst = this.content[0];
+    const lst = this.content.pop();
+
+    if (!this.isEmpty()) {
+      this.content[0] = lst;
+      this.siftDown(0);
+    }
+    return fst;
   },
 
   isEmpty() {
@@ -76,29 +68,17 @@ BinaryHeap.prototype = {
   }
 };
 
+const id = a => a;
+
 const main = () => {
   const id = a => a;
-  const bh = new BinaryHeap(id);
-  bh.push(5);
-  bh.push(3);
-  bh.push(10);
-  bh.push(500);
-
-  const bh2 = new BinaryHeap(id);
-  // Should pull in some property testing libs
-  for (let i = 0; i < 500; i++) {
-    // Yeah, really don't care about precision here.
-    bh2.push(Math.floor(Math.random() * 100));
-    console.log(bh2.content);
-  }
+  const heap = new BinaryHeap(id);
+  [10, 3, 4, 8, 2, 9, 7, 1, 2, 6, 5].forEach(heap.push.bind(heap));
 
   const res = [];
-  while (!bh2.isEmpty()) {
-    res.push(bh2.pop());
-    console.log(res);
+  while (!heap.isEmpty()) {
+    console.log(heap.pop());
   }
-
-  console.log(res);
 };
 
 main();
