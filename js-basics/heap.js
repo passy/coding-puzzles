@@ -19,7 +19,6 @@ BinaryHeap.prototype = {
     const el = this.content[i], score = this.cmp(el);
     let j = i;
 
-    console.log("el", el);
     while (j > 0) {
       const parentI = Math.floor(((i + 1) / 2) - 1);
       const parent = this.content[parentI];
