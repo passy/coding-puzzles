@@ -5,5 +5,8 @@
   "xo": {
     "esnext": true,
     "space": 2
+  },
+  "dependencies": {
+    "jsverify": "^0.7.1"
   }
 }

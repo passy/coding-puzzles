@@ -1,6 +1,6 @@
 'use strict';
 
-const jsc = require('jsverify');
+module.exports = BinaryHeap;
 
 function BinaryHeap(cmp) {
   this.content = [];
@@ -68,17 +68,31 @@ BinaryHeap.prototype = {
   }
 };
 
+// Tests
+
 const id = a => a;
 
-const main = () => {
-  const id = a => a;
-  const heap = new BinaryHeap(id);
-  [10, 3, 4, 8, 2, 9, 7, 1, 2, 6, 5].forEach(heap.push.bind(heap));
+const sort = (arr) => {
+  const bh = new BinaryHeap(id);
+  arr.forEach(bh.push.bind(bh));
 
   const res = [];
-  while (!heap.isEmpty()) {
-    console.log(heap.pop());
+  // This should be a fold.
+  while (!bh.isEmpty()) {
+    res.push(bh.pop());
   }
+
+  return res;
+}
+
+const test = () => {
+  const jsc = require('jsverify');
+
+  const prop_preservesLength = jsc.forall('array integer', (arr) => {
+    return arr.length === sort(arr).length;
+  });
+
+  jsc.assert(prop_preservesLength);
 };
 
-main();
+test();
