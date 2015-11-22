@@ -91,8 +91,19 @@ const test = () => {
   const prop_preservesLength = jsc.forall('array integer', (arr) => {
     return arr.length === sort(arr).length;
   });
-
   jsc.assert(prop_preservesLength);
+
+  const prop_preservesElements = jsc.forall('array integer', (arr) => {
+    const sorted = sort(arr);
+    return arr.reduce((b, a) => b && sorted.indexOf(a) >= 0, true);
+  });
+  jsc.assert(prop_preservesElements);
+
+  const prop_isIdempotent = jsc.forall('array integer', (arr) => {
+    // TODO: Ugh, no value comparison. Need to pull in _ or something.
+    // return isEqual(sort(arr), sort(sort(arr)));
+  });
+  // jsc.assert(prop_isIdempotent);
 };
 
 test();
