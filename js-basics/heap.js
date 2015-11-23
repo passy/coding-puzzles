@@ -27,7 +27,7 @@ BinaryHeap.prototype = {
     if (i <= 0) return;
 
     const parent = Math.floor((i - 1) / 2);
-    if (this.cmp(this.content[i]) > this.cmp(this.content[parent])) {
+    if (this.cmp(this.content[i], this.content[parent])) {
       this.swap(i, parent);
       this.bubbleUp(parent);
     }
@@ -39,11 +39,11 @@ BinaryHeap.prototype = {
     let largest = i;
 
     if (l < this.content.length &&
-        this.cmp(this.content[l]) > this.cmp(this.content[largest])) {
+        this.cmp(this.content[l], this.content[largest])) {
       largest = l;
     }
     if (r < this.content.length &&
-        this.cmp(this.content[r]) > this.cmp(this.content[largest])) {
+        this.cmp(this.content[r], this.content[largest])) {
       largest = r;
     }
     if (largest !== i) {
@@ -73,7 +73,7 @@ BinaryHeap.prototype = {
 const id = a => a;
 
 const sort = arr => {
-  const bh = new BinaryHeap(id);
+  const bh = new BinaryHeap((a, b) => a > b);
   arr.forEach(bh.push.bind(bh));
 
   const res = [];
@@ -114,7 +114,7 @@ const test = () => {
   jsc.assert(prop_isIdempotent);
 
   const prop_singletonHeapPopsSameElement = jsc.forall('integer', i => {
-    const bh = new BinaryHeap(id);
+    const bh = new BinaryHeap((a, b) => a > b);
     bh.push(i);
     return bh.pop() === i;
   });
