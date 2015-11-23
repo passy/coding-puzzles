@@ -112,6 +112,13 @@ const test = () => {
     eqArr(sort(arr), sort(sort(arr)))
   );
   jsc.assert(prop_isIdempotent);
+
+  const prop_singletonHeapPopsSameElement = jsc.forall('integer', i => {
+    const bh = new BinaryHeap(id);
+    bh.push(i);
+    return bh.pop() === i;
+  });
+  jsc.assert(prop_singletonHeapPopsSameElement);
 };
 
 test();
