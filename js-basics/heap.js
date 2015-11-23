@@ -38,12 +38,12 @@ BinaryHeap.prototype = {
     const r = l + 1;
     let largest = i;
 
-    const cmp = idx => this.cmp(this.content[idx]);
-
-    if (l < this.content.length && this.cmp(this.content[l]) > this.cmp(this.content[largest])) {
+    if (l < this.content.length &&
+        this.cmp(this.content[l]) > this.cmp(this.content[largest])) {
       largest = l;
     }
-    if (r < this.content.length && this.cmp(this.content[r]) > this.cmp(this.content[largest])) {
+    if (r < this.content.length &&
+        this.cmp(this.content[r]) > this.cmp(this.content[largest])) {
       largest = r;
     }
     if (largest !== i) {
@@ -72,7 +72,7 @@ BinaryHeap.prototype = {
 
 const id = a => a;
 
-const sort = (arr) => {
+const sort = arr => {
   const bh = new BinaryHeap(id);
   arr.forEach(bh.push.bind(bh));
 
