@@ -87,6 +87,16 @@ const sort = (arr) => {
 
 const test = () => {
   const jsc = require('jsverify');
+  const range = (start, end) => {
+    const r = [];
+    for (let i = start; i < end; i += 1) {
+      r.push(i);
+    }
+    return r;
+  }
+  const zip = (a, b) => range(0, Math.min(a.length, b.length))
+    .map((i) => [a[i], b[i]]);
+  const eqArr = (a, b) => zip(a, b).every(e => e[0] === e[1]);
 
   const prop_preservesLength = jsc.forall('array integer', arr =>
     arr.length === sort(arr).length
@@ -98,11 +108,10 @@ const test = () => {
   );
   jsc.assert(prop_preservesElements);
 
-  const prop_isIdempotent = jsc.forall('array integer', arr => {
-    // TODO: Ugh, no value comparison. Need to pull in _ or something.
-    // return isEqual(sort(arr), sort(sort(arr)));
-  });
-  // jsc.assert(prop_isIdempotent);
+  const prop_isIdempotent = jsc.forall('array integer', arr =>
+    eqArr(sort(arr), sort(sort(arr)))
+  );
+  jsc.assert(prop_isIdempotent);
 };
 
 test();
