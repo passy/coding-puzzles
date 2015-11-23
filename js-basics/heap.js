@@ -97,11 +97,18 @@ const test = () => {
   const zip = (a, b) => range(0, Math.min(a.length, b.length))
     .map((i) => [a[i], b[i]]);
   const eqArr = (a, b) => zip(a, b).every(e => e[0] === e[1]);
+  const isSorted = (arr) => arr.reduce((b, a) => [b[0] && a <= b[1], a],
+    [true, Infinity])[0];
 
   const prop_preservesLength = jsc.forall('array integer', arr =>
     arr.length === sort(arr).length
   );
   jsc.assert(prop_preservesLength);
+
+  const prop_isSorted = jsc.forall('array integer', arr =>
+    isSorted(sort(arr))
+  );
+  jsc.assert(prop_isSorted);
 
   const prop_preservesElements = jsc.forall('array integer', arr =>
     sort(arr).every(a => arr.indexOf(a) >= 0)
