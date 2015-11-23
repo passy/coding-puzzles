@@ -1,5 +1,9 @@
 'use strict';
 
+const formatBool = (b) => b && "Impressed" || "Oops!"
+
+const verifyMap = (map, k) => true
+
 const run = input => {
   const t = Number.parseInt(input.shift(), 10);
   // Yeah, that's a bit silly. Just give us a range, ffs.
@@ -11,9 +15,7 @@ const run = input => {
     const map = Array(n).fill(0).map(() => input.shift());
     const k = input.shift();
 
-    console.log('n, m', n, m)
-    console.log('map', map)
-    console.log('k', k)
+    console.log(formatBool(verifyMap(map, k)));
   });
 };
 
