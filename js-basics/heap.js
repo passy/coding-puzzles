@@ -88,18 +88,17 @@ const sort = (arr) => {
 const test = () => {
   const jsc = require('jsverify');
 
-  const prop_preservesLength = jsc.forall('array integer', (arr) => {
-    return arr.length === sort(arr).length;
-  });
+  const prop_preservesLength = jsc.forall('array integer', arr =>
+    arr.length === sort(arr).length
+  );
   jsc.assert(prop_preservesLength);
 
-  const prop_preservesElements = jsc.forall('array integer', (arr) => {
-    const sorted = sort(arr);
-    return arr.reduce((b, a) => b && sorted.indexOf(a) >= 0, true);
-  });
+  const prop_preservesElements = jsc.forall('array integer', arr =>
+    sort(arr).every(a => arr.indexOf(a) >= 0)
+  );
   jsc.assert(prop_preservesElements);
 
-  const prop_isIdempotent = jsc.forall('array integer', (arr) => {
+  const prop_isIdempotent = jsc.forall('array integer', arr => {
     // TODO: Ugh, no value comparison. Need to pull in _ or something.
     // return isEqual(sort(arr), sort(sort(arr)));
   });
