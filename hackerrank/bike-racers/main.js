@@ -13,22 +13,30 @@ const processData = (input) => {
   const bikers = Array(n).fill(0).map(() => input.shift().split(' ').map(i => parseInt(i, 10)));
   const bikes = Array(m).fill(0).map(() => input.shift().split(' ').map(i => parseInt(i, 10)));
 
-  console.log(go(k, bikers, bikes));
+  const res = Math.pow(go(k, bikers, bikes, 0), 2);
+  console.log(Math.round(res));
 };
 
-const go = (k, bikers, bikes) => {
-  // Okay, brute force first.
-  const b = bikers.map(biker => {
-    const distances = bikes.map((bike, i) =>
-      [i, Math.sqrt((Math.pow(biker[0] - bike[0], 2) - Math.pow(biker[1] - bike[1], 2)))]);
-    const min = distances.reduce((b, a) => a[1] < b[1] ? a : b, [0, Infinity]);
-    bikes.splice(min[0], 1);
-    return min[1];
-  });
+const go = (k, bikers, bikes, acc) => {
+  if (k === 0) return acc;
 
-  const max = (arr) => arr.reduce((b, a) => a > b ? a : b, -Infinity);
-  const res = max(b.sort().slice(0, k));
-  return Math.pow(res, 2);
+  // Okay, brute force first. O((n+m)^2)
+  const bikerDistances = bikers.map(biker =>
+    bikes.map((bike, i) =>
+      [i, Math.sqrt((Math.pow(biker[0] - bike[0], 2) + Math.pow(biker[1] - bike[1], 2)))])
+  );
+
+  const minDist = arr => arr.reduce((b, a) => b[1] < a[1] ? b : a, [-1, Infinity]);
+  const bestDistances = bikerDistances.map((d, i) => [i].concat(minDist(d)));
+
+  const bestDist = arr => arr.reduce((b, a) => b[2] < a[2] ? b : a, [-1, -1, Infinity]);
+  const best = bestDist(bestDistances);
+
+  // Should be immutable ...
+  bikers.splice(best[0], 1);
+  bikes.splice(best[1], 1);
+
+  return go(k - 1, bikers, bikes, best[2]);
 };
 
 const main = () => {
