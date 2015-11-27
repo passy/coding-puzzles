@@ -131,13 +131,15 @@ const main = () => {
 
   process.stdin.resume();
   process.stdin.setEncoding('ascii');
-  process.stdin.on('data', function (input) {
-    const ints = input.trim().split('\n').map(n => parseFloat(n, 10));
-    ints.shift();
-    ints.map(run.bind(null, maxHeap, minHeap)).forEach(n => console.log(n.toFixed(1)));
+
+  let input = '';
+  process.stdin.on('data', function (input_) {
+    input += input_;
   });
 
   process.stdin.on('end', function () {
+    const ints = input.trim().split('\n').slice(1).map(n => parseInt(n, 10));
+    ints.map(run.bind(null, maxHeap, minHeap)).forEach(n => console.log(n.toFixed(1)));
   });
 };
 
