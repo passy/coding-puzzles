@@ -4,6 +4,8 @@
   * @flow
   */
 
+const d = (str) => false && console.log(str);
+
 function BinaryHeap(cmp) {
   this.content = [];
   this.cmp = cmp;
@@ -44,7 +46,7 @@ BinaryHeap.prototype = {
         this.cmp(this.content[l], this.content[largest])) {
       largest = l;
     }
-    if (r < this.content.length &&
+    if (r < this.size() &&
         this.cmp(this.content[r], this.content[largest])) {
       largest = r;
     }
@@ -55,7 +57,7 @@ BinaryHeap.prototype = {
   },
 
   size() {
-    return this.content.length();
+    return this.content.length;
   },
 
   pop() {
@@ -78,6 +80,7 @@ const run = (maxHeap, minHeap, n) => {
   const maxHeapN = maxHeap.size();
   const minHeapN = minHeap.size();
 
+  // Let's make the empty case easier.
   if (maxHeapN === 0 && minHeapN === 0) {
     maxHeap.push(n);
     return n;
@@ -85,17 +88,53 @@ const run = (maxHeap, minHeap, n) => {
 
   const maxEl = maxHeap.peek();
   const minEl = minHeap.peek();
+  d('max el', maxEl);
+  d('min el', maxEl);
+
+  if (n >= minEl) {
+    d('pushing %d to minheap', n)
+    minHeap.push(n);
+  } else {
+    d('pushing %d to maxheap', n)
+    maxHeap.push(n);
+  }
+
+  rebalance(maxHeap, minHeap);
+  d('max', maxHeap.content);
+  d('min', minHeap.content);
+
+  switch (minHeap.size() - maxHeap.size()) {
+    case -1:
+      return maxHeap.peek();
+    case 1:
+      return minHeap.peek();
+    default:
+      return (maxHeap.peek() + minHeap.peek()) / 2;
+  }
+};
+
+const rebalance = (a, b) => {
+  if (a.size() > b.size() + 1) {
+    d('a is unbalanced, rebalancing.')
+    b.push(a.pop());
+  } else if (b.size() > a.size() + 1) {
+    d('b is unbalanced, rebalancing.')
+    a.push(b.pop());
+  } else {
+    d('not rebalancing')
+  }
 };
 
 const main = () => {
-  const maxHeap = new BinaryHeap((a, b) => a > b);
-  const minHeap = new BinaryHeap((a, b) => a < b);
+  const maxHeap = new BinaryHeap((a, b) => a >= b);
+  const minHeap = new BinaryHeap((a, b) => a <= b);
 
   process.stdin.resume();
   process.stdin.setEncoding('ascii');
   process.stdin.on('data', function (input) {
     const ints = input.trim().split('\n').map(n => parseFloat(n, 10));
-    ints.map(run.bind(null, maxHeap, minHeap)).forEach(n => console.log(n));
+    ints.shift();
+    ints.map(run.bind(null, maxHeap, minHeap)).forEach(n => console.log(n.toFixed(1)));
   });
 
   process.stdin.on('end', function () {
