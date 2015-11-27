@@ -54,6 +54,10 @@ BinaryHeap.prototype = {
     }
   },
 
+  size() {
+    return this.content.length();
+  },
+
   pop() {
     const fst = this.content[0];
     const lst = this.content.pop();
@@ -70,14 +74,28 @@ BinaryHeap.prototype = {
   }
 };
 
-const run = n => n;
+const run = (maxHeap, minHeap, n) => {
+  const maxHeapN = maxHeap.size();
+  const minHeapN = minHeap.size();
+
+  if (maxHeapN === 0 && minHeapN === 0) {
+    maxHeap.push(n);
+    return n;
+  }
+
+  const maxEl = maxHeap.peek();
+  const minEl = minHeap.peek();
+};
 
 const main = () => {
+  const maxHeap = new BinaryHeap((a, b) => a > b);
+  const minHeap = new BinaryHeap((a, b) => a < b);
+
   process.stdin.resume();
   process.stdin.setEncoding('ascii');
   process.stdin.on('data', function (input) {
     const ints = input.trim().split('\n').map(n => parseFloat(n, 10));
-    ints.map(run).forEach(n => console.log(n));
+    ints.map(run.bind(null, maxHeap, minHeap)).forEach(n => console.log(n));
   });
 
   process.stdin.on('end', function () {
