@@ -56,12 +56,12 @@ public class Main {
     printTopView(root);
   }
 
-  public static void printTopView(Node n) {
+  public static void printTopView(Node root) {
     Set<Integer> seen = new HashSet<>();
     Queue<QNode> q = new LinkedList<>();
     PriorityQueue<QNode> nodes = new PriorityQueue<>(1, new QNodeComparator());
 
-    q.add(new QNode(n, 0));
+    q.add(new QNode(root, 0));
 
     while (!q.isEmpty()) {
       QNode cur = q.remove();
