@@ -18,7 +18,11 @@ main = do
   let root = Node 1
                     (Node 2 Empty (Node 4 Empty (Node 5 Empty (Node 6 Empty Empty))))
                     (Node 3 Empty Empty)
+
+  -- Relying on the sort to be stable in lieu of an actual priority queue
   let q = sortOn hd $ traverseBF root
+
+  -- Stateful reduce, making sure we pick every horizontal distance only once.
   let res = snd $ foldl' (\(s, acc) a -> if hd a `S.member` s then (s, acc) else (S.insert (hd a) s, a : acc)) (S.empty, []) q
   print $ (key . node) <$> res
 
