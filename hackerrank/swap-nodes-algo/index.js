@@ -10,14 +10,12 @@ const run = (input /*: [string] */) => {
   const t = parseInt(input.shift(), 10);
   const swaps = Array(t).fill(0).map(() => parseInt(input.shift(), 10));
 
-  console.log('n: ', n);
-  console.log('nodes: ', nodes);
-  console.log('t: ', t);
-  console.log('swaps: ', swaps);
-
   const tree = mkTree(nodes);
-  console.log(tree);
-  tree.printLevelOrder();
+
+  for (const swap of swaps) {
+    tree.swapSubtreesAtLevel(swap);
+    tree.printInOrder();
+  }
 };
 
 class Node {
@@ -53,6 +51,39 @@ class Node {
     }
 
     console.log(str);
+  }
+
+  printInOrder() {
+
+    let str = '';
+    const go = (node) => {
+      if (node == null) return;
+
+      go(node.left);
+      str += node.key + ' ';
+      go(node.right);
+    };
+
+    go(this);
+    console.log(str);
+  }
+
+  swapSubtreesAtLevel(k) {
+    const dfs = (v, n, level) => {
+      v(n, level);
+      if (n.left != null) dfs(v, n.left, level + 1);
+      if (n.right != null) dfs(v, n.right, level + 1);
+    };
+
+    const visit = (node, level) => {
+      if (level === k) {
+        const tmp = node.right;
+        node.right = node.left;
+        node.left = tmp;
+      }
+    };
+
+    dfs(visit, this, 1);
   }
 }
 
