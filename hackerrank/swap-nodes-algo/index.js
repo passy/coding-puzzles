@@ -13,7 +13,7 @@ const run = (input /*: [string] */) => {
   const tree = mkTree(nodes);
 
   for (const swap of swaps) {
-    tree.swapSubtreesAtLevel(swap);
+    tree.swapAllSubTreesFor(swap);
     tree.printInOrder();
   }
 };
@@ -32,6 +32,15 @@ class Node {
     return '[key=' + this.key.toString()
       + ', left=' + (this.left == null ? '-' : this.left.toString())
       + ', right=' + (this.right == null ? '-' : this.right.toString()) + ']';
+  }
+
+  height() {
+    const go = (n, h) => {
+      if (n == null) return h;
+
+      return Math.max(go(n.left, h + 1), go(n.right, h + 1));
+    }
+    return go(this, 0);
   }
 
   printLevelOrder() {
@@ -84,6 +93,15 @@ class Node {
     };
 
     dfs(visit, this, 1);
+  }
+
+  swapAllSubTreesFor(k) {
+    let l = k;
+    let h = this.height();
+    while (l <= h) {
+      this.swapSubtreesAtLevel(l);
+      l *= 2;
+    }
   }
 }
 
