@@ -4,39 +4,40 @@
   * @flow
   */
 
-/*::
-  type Node = {
-    val: number;
-    children: [Node];
-  };
-*/
-
 const go = (n, vs, es) => {
   const adj = {};
-  for (let i = 0; i < n; i++) { adj[i] = []; }
+  const vals = {};
+  for (let i = 0; i < n; i++) { adj[i] = []; vals[i] = 0; }
   es.forEach(e => {
     const p = adj[e[0] - 1];
     adj[e[0] - 1] = p.concat(e[1] - 1);
     adj[e[1] - 1] = p.concat(e[0] - 1);
   });
 
-  console.log(adj);
-  dfs(new Set(), vs, adj, 0);
+  const visited = new Set();
+  const dfs = (i) => {
+    visited.add(i);
+    const ret = adj[i].reduce((acc, childi) => visited.has(childi) ? 0 : acc + dfs(childi), 0);
+    vals[i] = vs[i] + ret;
+    return vals[i];
+  };
+
+  // Kick off side-effecting DFS.
+  dfs(0);
+
+  let tot = sum(vs);
+  let best = Infinity;
+  for (let i = 0; i < n; i++) {
+    const diff = Math.abs(tot - (vals[i] * 2));
+    if (diff < best) {
+      best = diff;
+    }
+  }
+
+  console.log(best);
 };
 
-const dfs = (visited, vs, adj, i) => {
-  if (visited.has(i)) return;
-  visited.add(i);
-
-  const children = adj[i];
-  const res = children.map(c => dfs(visited, vs, adj, c));
-  console.log(vs[i]);
-
-
-  // Next step: Roll up the node value, get the minimum of the current node
-  // and its children.
-  return res;
-};
+const sum = (arr) => arr.reduce((b, a) => a + b, 0);
 
 const main = () => {
   process.stdin.resume();
