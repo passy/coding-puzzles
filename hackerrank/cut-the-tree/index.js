@@ -9,15 +9,14 @@ const go = (n, vs, es) => {
   const vals = {};
   for (let i = 0; i < n; i++) { adj[i] = []; vals[i] = 0; }
   es.forEach(e => {
-    const p = adj[e[0] - 1];
-    adj[e[0] - 1] = p.concat(e[1] - 1);
-    adj[e[1] - 1] = p.concat(e[0] - 1);
+    adj[e[0] - 1] = adj[e[0] - 1].concat(e[1] - 1);
+    adj[e[1] - 1] = adj[e[1] - 1].concat(e[0] - 1);
   });
 
   const visited = new Set();
   const dfs = (i) => {
     visited.add(i);
-    const ret = adj[i].reduce((acc, childi) => visited.has(childi) ? 0 : acc + dfs(childi), 0);
+    const ret = adj[i].reduce((acc, childi) => visited.has(childi) ? acc : acc + dfs(childi), 0);
     vals[i] = vs[i] + ret;
     return vals[i];
   };
@@ -25,14 +24,11 @@ const go = (n, vs, es) => {
   // Kick off side-effecting DFS.
   dfs(0);
 
-  let tot = sum(vs);
-  let best = Infinity;
-  for (let i = 0; i < n; i++) {
-    const diff = Math.abs(tot - (vals[i] * 2));
-    if (diff < best) {
-      best = diff;
-    }
-  }
+  const tot = sum(vs);
+  const best = Object.keys(vals).reduce((best, k) => {
+    const diff = Math.abs(tot - (vals[k] * 2));
+    return diff < best ? diff : best;
+  }, Infinity);
 
   console.log(best);
 };
