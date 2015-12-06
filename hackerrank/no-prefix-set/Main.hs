@@ -1,15 +1,15 @@
 module Main where
 
-import Prelude hiding ((<$>))
-import Control.Applicative ((<$>))
-import Control.Monad (liftM, replicateM, when)
-import Data.IORef (newIORef, readIORef, writeIORef)
-import qualified Data.Foldable as F
-import qualified Data.Set as S
-import Data.Set ((\\))
+import           Control.Applicative ((<$>))
+import           Control.Monad       (liftM, replicateM, when)
+import qualified Data.Foldable       as F
+import           Data.IORef          (newIORef, readIORef, writeIORef)
+import           Data.Set            ((\\))
+import qualified Data.Set            as S
+import           Prelude             hiding ((<$>))
 
 data Trie a = Trie {
-    value :: Maybe a,
+    value    :: Maybe a,
     children :: [(Char, Trie a)]
 } deriving (Show)
 

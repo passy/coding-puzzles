@@ -1,9 +1,12 @@
 module Main where
 
 import Control.Applicative
-import Data.List
 import Control.Monad
+import Control.Monad.Trans.State
+import Data.List
+import Data.Maybe
 import Debug.Trace
+import qualified Data.Set as S
 
 data Filled = F | E
   deriving (Show, Eq)
@@ -31,8 +34,22 @@ children (x, y) = [ ( x, y + 1 )
 
 compute :: [[Filled]] -> Int
 compute matrix =
-  let start = traceShowId $ findNext matrix (0, 0)
-  in start `seq` 0
+  -- TODO: Find out how to turn findNext into a list of
+  --       valid coords.
+  let (Just start) = traceShowId $ findNext matrix (0, 0)
+      visited = S.empty
+  in evalState (dfs matrix start) visited
+
+dfs :: [[Filled]] -> (Int, Int) -> State (S.Set (Int, Int)) Int
+dfs matrix start@(x, y) = do
+  visited <- get
+  let entry = (matrix !!! x) >>= (!!! y)
+  if S.member start visited || entry /= Just F then
+    return 0
+  else do
+    put $ S.insert start visited
+    res <- foldM (\b a -> liftM (+ b) (dfs matrix a)) 0 (children start)
+    return $ 1 + res
 
 findNext :: [[Filled]] -> (Int, Int) -> Maybe (Int, Int)
 findNext matrix start@(x, y) = do

@@ -11,6 +11,7 @@ const quickSort = l => {
   }
 
   const part = (a, lo, hi) => {
+    console.log('part:', a, lo, hi);
     const piv = a[hi];
     let i = lo;
     for (let j = lo; j < hi; j += 1) {
@@ -20,6 +21,7 @@ const quickSort = l => {
       }
     }
     swp(a, i, hi);
+    console.log('i=', i)
     return i;
   };
 
