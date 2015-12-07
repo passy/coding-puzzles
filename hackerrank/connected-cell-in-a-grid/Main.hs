@@ -4,8 +4,6 @@ import Control.Applicative
 import Control.Monad
 import Control.Monad.Trans.State
 import Data.List
-import Data.Maybe
-import Debug.Trace
 import qualified Data.Set as S
 
 data Filled = F | E
@@ -33,12 +31,7 @@ children (x, y) = [ ( x, y + 1 )
   | otherwise = Just (arr !! idx)
 
 compute :: [[Filled]] -> Int
-compute matrix =
-  -- TODO: Find out how to turn findNext into a list of
-  --       valid coords.
-  let (Just start) = traceShowId $ findNext matrix (0, 0)
-      visited = S.empty
-  in evalState (dfs matrix start) visited
+compute matrix = maximum . flip evalState S.empty . forM (coords matrix) $ dfs matrix
 
 dfs :: [[Filled]] -> (Int, Int) -> State (S.Set (Int, Int)) Int
 dfs matrix start@(x, y) = do
@@ -50,6 +43,23 @@ dfs matrix start@(x, y) = do
     put $ S.insert start visited
     res <- foldM (\b a -> liftM (+ b) (dfs matrix a)) 0 (children start)
     return $ 1 + res
+
+coords :: [[Filled]] -> [(Int, Int)]
+coords matrix = unfoldr go (0, 0)
+  where
+    go b = do
+      a <- findNext matrix b
+      let b' = inc matrix b
+      return (a, b')
+
+-- This is the nastiest piece in there. Unsafe, partial, ugh.
+inc :: [[Filled]] -> (Int, Int) -> (Int, Int)
+inc matrix (x, y) =
+  let m = length $ matrix !! x
+  in if y >= (m - 1) then
+    (x + 1, 0)
+  else
+    (x, y + 1)
 
 findNext :: [[Filled]] -> (Int, Int) -> Maybe (Int, Int)
 findNext matrix start@(x, y) = do
