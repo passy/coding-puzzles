@@ -1,10 +1,39 @@
+{-| https://www.hackerrank.com/challenges/connected-cell-in-a-grid
+
+= Connected Cell in a Grid
+
+== Problem Statement
+
+You are given a matrix with m rows and n columns of cells, each of which
+contains either 1 or 0. Two cells are said to be connected if they are adjacent
+to each other horizontally, vertically, or diagonally. The connected and filled
+(i.e. cells that contain a 1) cells form a region. There may be several regions
+in the matrix. Find the number of cells in the largest region in the matrix.
+
+== Input Format
+
+There will be three parts of t input:
+The first line will contain m, the number of rows in the matrix.
+The second line will contain n, the number of columns in the matrix.
+This will be followed by the matrix grid: the list of numbers that make up the
+matrix.
+
+== Output Format
+
+Print the length of the largest region in the given matrix.
+
+== Constraints
+
+0<m<10
+0<n<10
+-}
+
 module Main where
 
 import Control.Applicative
 import Control.Monad
 import Control.Monad.Trans.State
 import Data.List
-import Debug.Trace
 import qualified Data.Set as S
 
 data Filled = F | E
