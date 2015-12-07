@@ -4,6 +4,7 @@ import Control.Applicative
 import Control.Monad
 import Control.Monad.Trans.State
 import Data.List
+import Debug.Trace
 import qualified Data.Set as S
 
 data Filled = F | E
@@ -49,10 +50,11 @@ coords matrix = unfoldr go (0, 0)
   where
     go b = do
       a <- findNext matrix b
-      let b' = inc matrix b
+      let b' = inc matrix a
       return (a, b')
 
--- This is the nastiest piece in there. Unsafe, partial, ugh.
+-- Thanks to laziness this actually can't error, but it's still
+-- the nastiest thing in this file.
 inc :: [[Filled]] -> (Int, Int) -> (Int, Int)
 inc matrix (x, y) =
   let m = length $ matrix !! x
@@ -75,5 +77,5 @@ main = do
   n <- readLn :: IO Int
   m <- readLn :: IO Int
 
-  matrix <- replicateM m $ take n <$> fmap readFilled <$> words <$> getLine
+  matrix <- replicateM n $ take m <$> fmap readFilled <$> words <$> getLine
   print $ compute matrix
