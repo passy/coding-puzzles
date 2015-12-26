@@ -1,4 +1,4 @@
-module Day01 where
+module Main where
 
 solve :: String -> Int
 solve = sum . map mapPar
