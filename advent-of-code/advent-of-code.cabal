@@ -34,6 +34,13 @@ executable day03
   build-depends:       base >= 4.7 && < 5
                      , containers
 
+executable day03-2
+  hs-source-dirs:      .
+  main-is:             day03-2.hs
+  default-language:    Haskell2010
+  build-depends:       base >= 4.7 && < 5
+                     , containers
+
 executable day04
   hs-source-dirs:      .
   main-is:             day04.hs
