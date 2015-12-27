@@ -3,6 +3,13 @@ module Main where
 import qualified Data.Set as S
 import Data.List (foldl')
 
+import Control.Applicative (liftA2)
+
+-- | A lifted ('&&').
+(<&&>) :: Applicative f => f Bool -> f Bool -> f Bool
+(<&&>) = liftA2 (&&)
+{-# INLINE (<&&>) #-}
+
 vowels :: S.Set Char
 vowels = S.fromList "aeiou"
 
@@ -23,7 +30,7 @@ hasBadSequence (x0:x1:xs) | [x0, x1] `S.member` badSequences = True
 hasBadSequence _ = False
 
 isNice :: String -> Bool
-isNice s = hasEnoughVowels s && hasTwiceInARow s && not (hasBadSequence s)
+isNice = hasEnoughVowels <&&> hasTwiceInARow <&&> (not . hasBadSequence)
 
 main :: IO ()
 main = print =<< length <$> filter (== True) <$> fmap isNice <$> lines <$> getContents
