@@ -49,3 +49,10 @@ executable day04
                      , cryptohash
                      , bytestring
                      , base16-bytestring
+
+executable day05
+  hs-source-dirs:      .
+  main-is:             day05.hs
+  default-language:    Haskell2010
+  build-depends:       base >= 4.7 && < 5
+                     , containers
