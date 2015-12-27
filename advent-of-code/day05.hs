@@ -17,7 +17,7 @@ badSequences :: S.Set String
 badSequences = S.fromList ["ab", "cd", "pq", "xy"]
 
 hasEnoughVowels :: String -> Bool
-hasEnoughVowels = (>= 3) . length . filter (== True) . map (`S.member` vowels)
+hasEnoughVowels = (>= 3) . length . filter (`S.member` vowels)
 
 hasTwiceInARow :: String -> Bool
 hasTwiceInARow (x0:x1:xs) | x0 == x1 = True
