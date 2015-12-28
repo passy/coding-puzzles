@@ -75,12 +75,12 @@ toggle set toggled = turnOn (turnOff set off) on
     on  = toggled `S.difference` set
 
 compute' :: [Op] -> Integer
-compute' = fromIntegral . M.foldl' (+) 0 . foldl' eval M.empty
+compute' = M.foldl' (+) 0 . foldl' eval M.empty
   where
-    eval :: M.Map Coord Int -> Op -> M.Map Coord Int
-    eval b (TurnOn c) = update b c (+) 1
+    eval :: M.Map Coord Integer -> Op -> M.Map Coord Integer
+    eval b (TurnOn c)  = update b c (+) 1
     eval b (TurnOff c) = update b c low 0
-    eval b (Toggle c) = update b c (+) 2
+    eval b (Toggle c)  = update b c (+) 2
 
     update b c op v = S.foldl' (\m k -> M.insertWith op k v m) b c
 
