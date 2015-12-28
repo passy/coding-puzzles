@@ -65,6 +65,7 @@ executable day12
                      , aeson
                      , bytestring
                      , scientific
+                     , unordered-containers
 
 executable day20
   hs-source-dirs:      .
