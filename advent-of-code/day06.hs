@@ -8,9 +8,11 @@ import           Control.Applicative   (liftA2, (*>), (<*))
 import           Control.Arrow         ((>>>))
 import           Data.List             (foldl')
 import           Data.Text.IO          (getContents)
+import           System.Environment    (getArgs)
 import           Text.Megaparsec
 import           Text.Megaparsec.Text  (Parser ())
 
+import qualified Data.Map.Strict       as M
 import qualified Data.Set              as S
 import qualified Data.Text             as T
 import qualified Text.Megaparsec.Lexer as L
@@ -52,9 +54,6 @@ opParser = try (opP "turn off" TurnOff)
     expand :: Coord -> Coord -> Coords
     expand (fx, fy) (tx, ty) = S.fromList [(x, y) | x <- [fx..tx], y <- [fy..ty]]
 
-solve :: T.Text -> Either ParseError Integer
-solve s = compute <$> parse opsParser "<stdin>" s
-
 compute :: [Op] -> Integer
 compute = fromIntegral . S.size . foldl' eval S.empty
   where
@@ -75,5 +74,24 @@ toggle set toggled = turnOn (turnOff set off) on
     off = set `S.intersection` toggled
     on  = toggled `S.difference` set
 
+compute' :: [Op] -> Integer
+compute' = fromIntegral . M.foldl' (+) 0 . foldl' eval M.empty
+  where
+    eval :: M.Map Coord Int -> Op -> M.Map Coord Int
+    eval b (TurnOn c) = update b c (+) 1
+    eval b (TurnOff c) = update b c low 0
+    eval b (Toggle c) = update b c (+) 2
+
+    update b c op v = S.foldl' (\m k -> M.insertWith op k v m) b c
+
+    low _ = max 0 . (-) 1
+
 main :: IO ()
-main = print =<< solve <$> getContents
+main = do
+  [c] <- getArgs
+  input <- parse opsParser "<stdin>" <$> getContents
+
+  print $ case c of
+    "1" -> compute <$> input
+    "2" -> compute' <$> input
+    _   -> error "Specify either 1 or 2"
