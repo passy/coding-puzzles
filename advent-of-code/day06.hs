@@ -84,7 +84,7 @@ compute' = M.foldl' (+) 0 . foldl' eval M.empty
 
     update b c op v = S.foldl' (\m k -> M.insertWith op k v m) b c
 
-    low _ = max 0 . (-) 1
+    low = const . max 0 . subtract 1
 
 main :: IO ()
 main = do
