@@ -24,11 +24,11 @@ toposort = go =<< noIncoming
  where
     go [] (Graph _ []) = []
     go [] (Graph _ _) = error "toposort: Cycle detected"
-    go (v:vs) g' =
-      let es  = outgoing v g'
-          g'' = foldr removeEdge g' es
-          vs' = filter (null . flip incoming g'') $ snd <$> es
-      in v : go (vs ++ vs') g''
+    go (v:vs) g =
+      let es  = outgoing v g
+          g' = foldr removeEdge g es
+          vs' = filter (null . flip incoming g') $ snd <$> es
+      in v : go (vs ++ vs') g'
 
 main :: IO ()
 main = do
