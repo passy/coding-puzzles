@@ -20,15 +20,15 @@ noIncoming g = filter (null . flip incoming g) $ vertices g
 
 -- Khan's algorithm
 toposort :: Eq a => Graph a -> [a]
-toposort = go [] =<< noIncoming
+toposort = go =<< noIncoming
  where
-    go acc [] (Graph _ []) = reverse acc
-    go _   [] (Graph _ _) = error "toposort: Cycle detected"
-    go acc (v:vs) g' =
+    go [] (Graph _ []) = []
+    go [] (Graph _ _) = error "toposort: Cycle detected"
+    go (v:vs) g' =
       let es  = outgoing v g'
-          g''  = foldr removeEdge g' es
+          g'' = foldr removeEdge g' es
           vs' = filter (null . flip incoming g'') $ snd <$> es
-      in go (v : acc) (vs ++ vs') g''
+      in v : go (vs ++ vs') g''
 
 main :: IO ()
 main = do
