@@ -1,0 +1,14 @@
+import Data.List
+digits n 
+{-  123->[3,2,1]
+ -}
+    |n<10=[n]
+    |otherwise= y:digits x 
+    where
+    (x,y)=divMod n 10
+problem_119 =sort [(a^b)|
+    a<-[2..200],
+    b<-[2..9],
+    let m=a^b,
+    let n=sum$digits m,
+    n==a]!!29
