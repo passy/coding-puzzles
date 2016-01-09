@@ -8,9 +8,9 @@ public class Main {
         final int n = scanner.nextInt();
         final Trie t = new TrieImpl();
 
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i <= n; i++) {
             final String line = scanner.nextLine().trim();
-            if (!t.add(line)) {
+            if (!line.isEmpty() && !t.add(line)) {
                 System.out.printf("BAD SET\n%s", line);
                 return;
             }
@@ -30,9 +30,8 @@ class TrieImpl implements Trie {
     @Override
     public boolean add(final String word) {
         TrieNode node = root;
-        int index = 0;
         final int length = word.length();
-        while (index < length) {
+        for (int index = 0; index < length; index++) {
             node.leaf = false;
             final char c = word.charAt(index);
             final int i = c - 'a';
@@ -44,7 +43,6 @@ class TrieImpl implements Trie {
             }
 
             node = node.children[i];
-            index += 1;
         }
 
         return true;
