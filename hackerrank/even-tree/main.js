@@ -35,9 +35,30 @@ const run = (lines) => {
   }
 
   const depths = calcDepths(entries[0], edges);
+  const cuts = calcCuts(entries[0], edges, depths);
 
-  console.log(edges);
-  console.log(depths);
+  console.log(cuts.length);
+};
+
+const even = a => a % 2 === 0;
+
+const calcCuts = (start, edges, depths) => {
+  let cuts = [];
+
+  const go = i => {
+    const es = edges[i];
+    es.forEach(j => go(j));
+
+    const cuttable = es.filter(j => even(depths[j]));
+    depths[i] -= cuttable.reduce((b, a) => b + depths[a], 0);
+
+    if (cuttable.length > 0) {
+      cuts = cuts.concat(cuttable.map(c => [c, i]));
+    }
+  };
+
+  go(start);
+  return cuts;
 };
 
 const calcDepths = (start, edges) => {
