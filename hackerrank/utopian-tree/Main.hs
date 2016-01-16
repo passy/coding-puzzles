@@ -5,7 +5,7 @@ import Control.Monad (replicateM_)
 import Data.List (foldl')
 
 cycles :: Int -> Int
-cycles n = foldl' (flip id) 1 $ take n $ concat $ repeat [(* 2), (+ 1)]
+cycles n = foldl' (flip ($)) 1 $ take n $ cycle [(* 2), (+ 1)]
 
 main :: IO ()
 main = do
