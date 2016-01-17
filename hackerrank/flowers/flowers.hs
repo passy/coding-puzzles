@@ -1,9 +1,10 @@
 {-# LANGUAGE ScopedTypeVariables #-}
+import Control.Monad (join)
 import Control.Arrow ((***), Arrow)
 import Data.List (sort)
 
 mapTuple ::  Arrow a => a b' c' -> a (b', b') (c', c')
-mapTuple f = f *** f
+mapTuple = join (***)
 
 calcM :: Int -> Int -> [Integer]
 calcM n k = take n $ concat [replicate k x | x <- [1..]]
@@ -20,14 +21,8 @@ minimumPrice n k flowers =
 run :: Int -> Int -> [Integer] -> IO ()
 run n k flowers = print $ minimumPrice n k flowers
 
-readi :: String -> Int
-readi = read
-
-readi' :: String -> Integer
-readi' = read
-
 main :: IO ()
 main = do
-    (n, k) <- fmap (mapTuple readi . break (== ' ')) getLine
-    flowers <- fmap (map readi' . words) getLine
+    (n, k) <- mapTuple read . break (== ' ') <$> getLine
+    flowers <- map read . words <$> getLine
     run n k flowers
