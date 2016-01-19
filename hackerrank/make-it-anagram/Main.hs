@@ -4,9 +4,10 @@ import qualified Data.Map as M
 
 run :: String -> String -> Int
 run a b =
-  let am = M.fromListWith (+) $ zip a (repeat 1)
-      bm = M.fromListWith (+) $ zip b (repeat (-1))
-  in M.size $ M.filter (/= 0) $ M.unionWith (+) am bm
+  let mkzip =  M.fromListWith (+) . flip zip (repeat 1)
+      am = mkzip a
+      bm = mkzip b
+  in sum $ abs <$> M.unionWith (-) am bm
 
 main :: IO ()
 main = do
