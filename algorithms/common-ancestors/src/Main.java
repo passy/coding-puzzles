@@ -102,14 +102,17 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        final Node<String> father = new Node<>("F");
+        final Node<String> f1 = new Node<>("F1");
+        final Node<String> f0 = new Node<>("F0");
+        f0.parents.fst = f1;
+
         final Node<String> me = new Node<>("Me");
-        me.parents.fst = father;
+        me.parents.fst = f0;
         me.parents.snd = new Node<>("M0");
 
         final Node<String> them = new Node<>("Them");
         them.parents.fst = new Node<>("M1");
-        them.parents.snd = father;
+        them.parents.snd = f1;
 
         final Set<Node<String>> common = common(me, them);
         System.out.println(common);
