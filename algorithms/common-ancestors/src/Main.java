@@ -1,3 +1,5 @@
+import org.jetbrains.annotations.Nullable;
+
 import java.util.*;
 
 public class Main {
@@ -59,10 +61,30 @@ public class Main {
         final Set<Node<T>> nodes = a.bfs();
         nodes.retainAll(b.bfs());
 
-        System.out.println("a: " + a.bfs());
-        System.out.println("b: " + b.bfs());
-
         return nodes;
+    }
+
+    public static @Nullable <T> Node<T> lca(final Node<T> a, final Node<T> b) {
+        final Queue<Node<T>> q = new LinkedList<>();
+        q.add(a);
+        q.add(b);
+
+        final Set<Node<T>> visited = new HashSet<>();
+
+        while (!q.isEmpty()) {
+            final Node<T> node = q.remove();
+            if (visited.contains(node)) {
+                return node;
+            }
+            visited.add(node);
+            for (final Node<T> parent : node.parents) {
+                if (!visited.contains(parent)) {
+                    q.add(parent);
+                }
+            }
+        }
+
+        return null;
     }
 
     public static class Pair<T> implements Iterable<T> {
@@ -114,7 +136,7 @@ public class Main {
         them.parents.fst = new Node<>("M1");
         them.parents.snd = f1;
 
-        final Set<Node<String>> common = common(me, them);
-        System.out.println(common);
+        final Node<String> lca = lca(me, them);
+        System.out.println(lca);
     }
 }
