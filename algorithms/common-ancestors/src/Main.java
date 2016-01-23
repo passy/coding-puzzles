@@ -10,8 +10,22 @@ public class Main {
             this.parents = new Pair();
         }
 
-        public Node<T> lca(final Node<T> them) {
-            return null;
+        public Set<Node<T>> bfs() {
+            Queue<Node<T>> q = new LinkedList();
+            q.add(this);
+            Set<Node<T>> visited = new HashSet<>();
+            visited.add(this);
+            while (!q.isEmpty()) {
+                final Node<T> el = q.remove();
+                for (final Node<T> parent : el.parents) {
+                    if (!visited.contains(parent)) {
+                        q.add(parent);
+                        visited.add(parent);
+                    }
+                }
+            }
+
+            return visited;
         }
 
         @Override
@@ -39,6 +53,16 @@ public class Main {
 
             return list;
         }
+    }
+
+    public static <T> Set<Node<T>> common(final Node<T> a, final Node<T> b) {
+        final Set<Node<T>> nodes = a.bfs();
+        nodes.retainAll(b.bfs());
+
+        System.out.println("a: " + a.bfs());
+        System.out.println("b: " + b.bfs());
+
+        return nodes;
     }
 
     public static class Pair<T> implements Iterable<T> {
@@ -78,16 +102,16 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        final Node<String> father = new Node("F");
-        final Node<String> me = new Node("Me");
+        final Node<String> father = new Node<>("F");
+        final Node<String> me = new Node<>("Me");
         me.parents.fst = father;
-        me.parents.snd = new Node("M0");
+        me.parents.snd = new Node<>("M0");
 
-        final Node<String> them = new Node("Them");
-        them.parents.fst = new Node("M1");
+        final Node<String> them = new Node<>("Them");
+        them.parents.fst = new Node<>("M1");
         them.parents.snd = father;
 
-        final Node<String> lca = me.lca(them);
-        System.out.println(lca);
+        final Set<Node<String>> common = common(me, them);
+        System.out.println(common);
     }
 }
