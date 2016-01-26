@@ -15,8 +15,8 @@ public class Solution {
         System.out.println(changeWays(ms, n));
     }
 
-    public static int changeWays(int[] coins, int sum) {
-        final int[] cache = new int[sum + 1];
+    public static long changeWays(int[] coins, int sum) {
+        final long[] cache = new long[sum + 1];
         cache[0] = 1;
 
         for (final int coin : coins) {
