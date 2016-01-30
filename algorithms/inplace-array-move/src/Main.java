@@ -6,7 +6,7 @@ public class Main {
      * Move zeroes in an array to the beginning of the array, while respecting the
      * order of other elements without extra space. Runs in O(n^2).
      *
-     * I think there's an O(n) solution ...
+     * I think there's an O(n) solution ... Yes, there is passy, you big dummy.
      */
     public static void main(String[] args) {
         int[] input = new int[] { 0, 1, 2, 0, 3, 4, 0, 0, 5, 0 };
