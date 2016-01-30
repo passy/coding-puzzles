@@ -12,10 +12,11 @@ public class Main {
         int[] input = new int[] { 0, 1, 2, 0, 3, 4, 0, 0, 5, 0 };
 
         System.out.println("Before: " + Arrays.toString(input));
-        moveZeroes(input);
+        moveZeroes2(input);
         System.out.println("After: " + Arrays.toString(input));
     }
 
+    // O(n^2)
     private static void moveZeroes(final int[] input) {
         int j = 0;
         for (int i = 0; i < input.length; i++) {
@@ -23,6 +24,20 @@ public class Main {
                 insert(input, i, j++);
             }
         }
+    }
+
+    // O(n)
+    private static void moveZeroes2(final int[] input) {
+        int count = 0;
+        final int n = input.length;
+
+        for (int i = n - 1; i >= 0; i--) {
+            if (input[i] != 0) {
+                input[n - ++count] = input[i];
+            }
+        }
+
+        Arrays.fill(input, 0, count, 0);
     }
 
     private static void insert(final int[] input, final int from, final int to) {
