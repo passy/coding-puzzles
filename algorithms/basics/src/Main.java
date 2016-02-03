@@ -1,8 +1,7 @@
 public class Main {
 
     public static void main(String[] args) {
-        System.out.println(fib(8));
-        System.out.println(fibIter(100));
+        System.out.println(facIter(10));
     }
 
     public static long fib(int n) {
@@ -22,5 +21,19 @@ public class Main {
         }
 
         return b;
+    }
+
+    public static long fac(int n) {
+        if (n == 0) return 1;
+        return n * fac(n - 1);
+    }
+
+    public static long facIter(int n) {
+        int r = 1;
+        for (int i = 2; i < n; i++) {
+            r *= i;
+        }
+
+        return r;
     }
 }
