@@ -1,7 +1,7 @@
 public class Main {
 
     public static void main(String[] args) {
-        System.out.println(bigAdd("102", "18"));
+        System.out.println(addsUp(new int[] { 1, 3, 4 }, 2));
     }
 
     public static long fib(int n) {
@@ -72,5 +72,25 @@ public class Main {
         }
 
         return as;
+    }
+
+    private static boolean addsUp(final int[] arr, final int sum) {
+        int i = 0;
+        int j = -1;
+        int tmp = 0;
+
+        while (j < arr.length - 1) {
+            tmp += arr[++j];
+
+            while (tmp > sum) {
+                tmp -= arr[i++];
+            }
+
+            if (sum == tmp) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
