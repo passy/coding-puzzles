@@ -7,6 +7,6 @@
     "space": 2
   },
   "dependencies": {
-    "jsverify": "^0.7.1"
+    "jsverify": "^0.8.4"
   }
 }
